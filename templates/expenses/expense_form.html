@@ -1,0 +1,77 @@
+{% extends 'base.html' %}
+{% block title %}{{ action }} {{ type }} – Expense Tracker Pro{% endblock %}
+
+{% block content %}
+<div class="container py-4" style="max-width: 640px;">
+
+    <!-- Breadcrumb -->
+    <nav aria-label="breadcrumb" class="mb-3">
+        <ol class="breadcrumb custom-breadcrumb">
+            <li class="breadcrumb-item"><a href="{% url 'dashboard' %}">Dashboard</a></li>
+            {% if type == 'Expense' %}
+            <li class="breadcrumb-item"><a href="{% url 'expense_list' %}">Expenses</a></li>
+            {% else %}
+            <li class="breadcrumb-item"><a href="{% url 'income_list' %}">Income</a></li>
+            {% endif %}
+            <li class="breadcrumb-item active">{{ action }} {{ type }}</li>
+        </ol>
+    </nav>
+
+    <div class="glass-card p-4">
+        <!-- Header -->
+        <div class="form-header mb-4">
+            <div class="form-icon {% if type == 'Expense' %}form-icon-expense{% else %}form-icon-income{% endif %}">
+                {% if type == 'Expense' %}
+                    <i class="bi bi-dash-circle-fill"></i>
+                {% else %}
+                    <i class="bi bi-plus-circle-fill"></i>
+                {% endif %}
+            </div>
+            <div>
+                <h1 class="page-title mb-1">{{ action }} {{ type }}</h1>
+                <p class="text-muted mb-0">
+                    {% if action == 'Edit' %}Update the details below{% else %}Fill in the details to record{% endif %}
+                </p>
+            </div>
+        </div>
+
+        <form method="post" novalidate>
+            {% csrf_token %}
+
+            {% for field in form %}
+            <div class="mb-3">
+                <label for="{{ field.id_for_label }}" class="form-label fw-500">
+                    {{ field.label }}
+                    {% if field.field.required %}<span class="text-accent">*</span>{% endif %}
+                </label>
+                {{ field }}
+                {% if field.errors %}
+                    {% for error in field.errors %}
+                    <div class="invalid-feedback d-block">{{ error }}</div>
+                    {% endfor %}
+                {% endif %}
+                {% if field.help_text %}
+                <div class="form-text">{{ field.help_text }}</div>
+                {% endif %}
+            </div>
+            {% endfor %}
+
+            <div class="d-flex gap-3 mt-4">
+                <button type="submit" class="btn {% if type == 'Expense' %}btn-danger-glow{% else %}btn-success-glow{% endif %} flex-fill">
+                    <i class="bi bi-check-lg me-1"></i>{{ action }} {{ type }}
+                </button>
+                {% if type == 'Expense' %}
+                <a href="{% url 'expense_list' %}" class="btn btn-ghost flex-fill">
+                    <i class="bi bi-x-lg me-1"></i>Cancel
+                </a>
+                {% else %}
+                <a href="{% url 'income_list' %}" class="btn btn-ghost flex-fill">
+                    <i class="bi bi-x-lg me-1"></i>Cancel
+                </a>
+                {% endif %}
+            </div>
+        </form>
+    </div>
+
+</div>
+{% endblock %}

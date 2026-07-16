@@ -1,0 +1,30 @@
+{% extends 'base.html' %}
+{% block title %}Confirm Delete – Expense Tracker Pro{% endblock %}
+
+{% block content %}
+<div class="container py-5" style="max-width: 500px;">
+    <div class="glass-card p-4 text-center">
+        <div class="delete-icon mb-4">
+            <i class="bi bi-exclamation-triangle-fill text-warning" style="font-size: 3.5rem;"></i>
+        </div>
+        <h1 class="page-title mb-2">Delete {{ type }}?</h1>
+        <p class="text-muted mb-1">You are about to permanently delete:</p>
+        <p class="fw-600 fs-5 mb-4 text-danger-bright">
+            "{% if type == 'Expense' %}{{ obj.title }}{% else %}{{ obj.source }}{% endif %}"
+            <br><small class="text-muted fw-400">₹{{ obj.amount }} • {{ obj.date }}</small>
+        </p>
+        <p class="text-muted small mb-4">This action cannot be undone.</p>
+        <form method="post" class="d-flex gap-3 justify-content-center">
+            {% csrf_token %}
+            <button type="submit" class="btn btn-danger-glow px-4">
+                <i class="bi bi-trash3-fill me-1"></i>Yes, Delete
+            </button>
+            {% if type == 'Expense' %}
+            <a href="{% url 'expense_list' %}" class="btn btn-ghost px-4">Cancel</a>
+            {% else %}
+            <a href="{% url 'income_list' %}" class="btn btn-ghost px-4">Cancel</a>
+            {% endif %}
+        </form>
+    </div>
+</div>
+{% endblock %}

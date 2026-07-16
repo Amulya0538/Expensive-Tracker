@@ -1,0 +1,60 @@
+{% extends 'base.html' %}
+{% block title %}Login – Expense Tracker Pro{% endblock %}
+
+{% block content %}
+<div class="auth-wrapper">
+    <div class="glass-card auth-card">
+        <div class="auth-header text-center mb-4">
+            <div class="brand-logo mb-2">
+                <i class="bi bi-wallet2"></i>
+            </div>
+            <h2 class="fw-bold">Welcome Back</h2>
+            <p class="text-muted small">Access your personal finance manager</p>
+        </div>
+
+        <form method="post" novalidate>
+            {% csrf_token %}
+            
+            {% if form.non_field_errors %}
+            <div class="alert alert-danger-glow mb-3">
+                {% for error in form.non_field_errors %}
+                <div class="small"><i class="bi bi-exclamation-circle-fill me-2"></i>{{ error }}</div>
+                {% endfor %}
+            </div>
+            {% endif %}
+
+            {% for field in form %}
+            <div class="mb-3">
+                <label for="{{ field.id_for_label }}" class="form-label small fw-500">{{ field.label }}</label>
+                <div class="input-group">
+                    <span class="input-group-text glass-input-icon">
+                        {% if 'username' in field.name %}<i class="bi bi-person"></i>
+                        {% elif 'password' in field.name %}<i class="bi bi-lock"></i>
+                        {% else %}<i class="bi bi-envelope"></i>{% endif %}
+                    </span>
+                    <input type="{{ field.field.widget.input_type|default:'text' }}" 
+                           name="{{ field.html_name }}" 
+                           id="{{ field.id_for_label }}" 
+                           class="form-control glass-input {% if field.errors %}is-invalid{% endif %}" 
+                           placeholder="Enter {{ field.label|lower }}"
+                           required>
+                </div>
+                {% if field.errors %}
+                    {% for error in field.errors %}
+                    <div class="invalid-feedback d-block">{{ error }}</div>
+                    {% endfor %}
+                {% endif %}
+            </div>
+            {% endfor %}
+
+            <button type="submit" class="btn btn-accent w-100 py-2.5 mt-3">
+                <i class="bi bi-box-arrow-in-right me-1"></i>Sign In
+            </button>
+        </form>
+
+        <div class="text-center mt-4">
+            <p class="mb-0 text-muted small">New here? <a href="{% url 'register' %}" class="text-accent fw-600 text-decoration-none">Create an account</a></p>
+        </div>
+    </div>
+</div>
+{% endblock %}
